@@ -9,10 +9,10 @@ from app.whatsapp.send_otp import send_otp
 from app.functions.get_facebook_access_token import get_access_token
 from app.functions.subcribe_to_webhook import subscribe_to_webhook
 from app.functions.register_phone_number import register_phone
-
+from app.functions.send_template import send_whatsapp_template
 
 from app.create_templates.create_otp_template import create_otp_template
-
+from app.create_templates.create_job_alert_template import create_job_alert_template
 
 @app.route('/get_facebook_token', methods=['POST'])
 def facebook_token():
@@ -64,6 +64,59 @@ def send_otp_network_call():
     result = send_otp(otp=otp, to=to, phone_number_id=phone, access_token=access_token, template_name=template_name)
     return jsonify(result)
 
+
+@app.route('/create_job_template', methods=['POST'])
+def create_template_job():
+    data = request.get_json()
+    waba_id = data.get('waba')
+    access_token = data.get("access_token")
+    # phone = data.get("pid")
+    # otp = data.get("otp")
+    # to = data.get("to")
+    # template_name = data.get("template_name")
+    result = create_job_alert_template(waba_id=waba_id, access_token=access_token)
+    return jsonify(result)
+
+@app.route("/send_job_alert", methods=["POST"])
+def handle_send_job_alert():
+    """
+    An example endpoint that sends a job alert using hardcoded, false data
+    for waba_id, access_token, and all template parameters.
+    """
+    
+    data = request.get_json()
+    waba_id = data.get('waba')
+    pid = data.get("pid")
+    access_token = data.get("access_token")
+    to = data.get('to')
+    
+    template_name = "new_job_alert_with_named_params_url_param"
+    
+    body_named_params = {
+        "job_title": "Lead Data Scientist",
+        "company_name": "Sumukha AI",
+        "job_location": "Bengaluru",
+        "job_type": "Full-time",
+        "ctc": "₹40-50 LPA",
+        "deadline": "15-Oct-2025"
+    }
+    
+    url_button_params = ["sumukha_ai"] # This will be the job slug
+
+    # 3. Call the generic send function with the false data
+    api_response = send_whatsapp_template(
+        phone_number_id=pid,
+        access_token=access_token,
+        to_phone=to,
+        template_name=template_name,
+        named_params=body_named_params,
+        button_params=url_button_params
+    )
+
+    if "error" in api_response:
+        return jsonify(api_response), 500
+        
+    return jsonify(api_response), 200
 
 
 if __name__ == '__main__':
