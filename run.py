@@ -4,9 +4,14 @@ from flask import Flask, request, jsonify
 
 
 from app.whatsapp.send_otp import send_otp
+
+
 from app.functions.get_facebook_access_token import get_access_token
 from app.functions.subcribe_to_webhook import subscribe_to_webhook
 from app.functions.register_phone_number import register_phone
+
+
+from app.create_templates.create_otp_template import create_otp_template
 
 
 @app.route('/get_facebook_token', methods=['POST'])
@@ -36,6 +41,29 @@ def subscribe_webhook():
     test = data.get("test")
     result = subscribe_to_webhook(waba_id=waba_id, callback_uri=call,access_token=access_token,verify_token=test)
     return jsonify(result)
+
+
+@app.route('/create_otp_template', methods=['POST'])
+def create_otp():
+    data = request.get_json()
+    waba_id = data.get('waba')
+    access_token = data.get("access_token")
+    result = create_otp_template(waba_id=waba_id, access_token=access_token)
+    return jsonify(result)
+
+
+@app.route('/send_otp_network_call', methods=['POST'])
+def send_otp_network_call():
+    data = request.get_json()
+    waba_id = data.get('waba')
+    access_token = data.get("access_token")
+    phone = data.get("pid")
+    otp = data.get("otp")
+    to = data.get("to")
+    template_name = data.get("template_name")
+    result = send_otp(otp=otp, to=to, phone_number_id=phone, access_token=access_token, template_name=template_name)
+    return jsonify(result)
+
 
 
 if __name__ == '__main__':
