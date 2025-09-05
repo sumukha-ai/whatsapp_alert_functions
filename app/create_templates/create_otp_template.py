@@ -56,7 +56,12 @@ def create_otp_template(
     }
 
     response = requests.post(url, headers=headers, json=payload)
-
+    #this returns ID of the template - store the ID and the template name in the DB
+    # sample response - {
+    #     "id": "1146525384200483",
+    #     "status": "APPROVED",
+    #     "category": "AUTHENTICATION"
+    # }
     try:
         return response.json()
     except Exception:
