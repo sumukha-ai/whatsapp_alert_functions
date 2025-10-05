@@ -31,8 +31,8 @@ def subscribe_to_webhook(callback_uri, verify_token, waba_id, access_token):
 
     # The JSON data payload now uses the function parameters
     payload = json.dumps({
-        "override_callback_uri": callback_uri,
-        "verify_token": verify_token
+        "override_callback_uri":callback_uri,
+        "verify_token":verify_token
     })
 
     try:

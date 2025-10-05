@@ -1,7 +1,7 @@
 import requests
 
 def send_otp(otp: str, to: str, phone_number_id: str, access_token: str,template_name: str, language_code: str = "en_US"):
-    print('inside send_otp: ')
+    print('inside send_otp: *****************************/n/n/n/n/n/n/n ********************************************')
     """
     Sends an OTP via WhatsApp using the Cloud API and a template message.
     
@@ -12,8 +12,7 @@ def send_otp(otp: str, to: str, phone_number_id: str, access_token: str,template
     - access_token: The system user access token for authorization
     - language_code: Language code for the template (default 'en_US')
     """
-    pid = int(phone_number_id)
-    url = f"https://graph.facebook.com/v22.0/{pid}/messages"
+    url = f"https://graph.facebook.com/v20.0/{phone_number_id}/messages"
 
     headers = {
         "Content-Type": "application/json",
@@ -56,5 +55,5 @@ def send_otp(otp: str, to: str, phone_number_id: str, access_token: str,template
 }
 
     response = requests.post(url, headers=headers, json=payload, timeout=15)
-    response.raise_for_status()  # raise exception if the request failed
+    print('response: ', response)
     return response.json()
