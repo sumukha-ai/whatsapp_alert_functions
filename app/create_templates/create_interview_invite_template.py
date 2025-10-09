@@ -1,15 +1,17 @@
 import requests
 
-def create_job_alert_template(
+
+def create_interview_invite_template(
     waba_id: str,
     access_token: str,
-    template_name: str = "job_application_status_update_utility",
+    template_name: str = "interview_invitation_utility",
     language: str = "en",
     category: str = "UTILITY",
-    base_job_url: str = "https://sumukhaai.com/jobs"
+    base_interview_url: str = "https://sumukhaai.com/interviews"
 ):
     """
-    Creates a compliant WhatsApp UTILITY template using named parameters.
+    Creates a compliant WhatsApp UTILITY template for interview invitations
+    using named parameters.
 
     Args:
         waba_id (str): WhatsApp Business Account ID.
@@ -17,13 +19,13 @@ def create_job_alert_template(
         template_name (str): Template name.
         language (str): Template language code.
         category (str): Should be 'UTILITY'.
-        base_job_url (str): Base HTTPS job URL.
+        base_interview_url (str): Base HTTPS URL for interview details.
 
     Returns:
         dict: Meta API response.
     """
-    if not base_job_url.startswith("https://"):
-        raise ValueError("The base_job_url must be a valid HTTPS URL.")
+    if not base_interview_url.startswith("https://"):
+        raise ValueError("The base_interview_url must be a valid HTTPS URL.")
 
     url = f"https://graph.facebook.com/v20.0/{waba_id}/message_templates"
 
@@ -42,27 +44,23 @@ def create_job_alert_template(
             {
                 "type": "HEADER",
                 "format": "TEXT",
-                "text": "Job Application Update"
+                "text": "Interview Invitation"
             },
             {
                 "type": "BODY",
                 "text": (
-                    "This is a notification about a job opportunity:\n\n"
-                    "• Job Title: {{job_title}}\n"
-                    "• Company: {{company_name}}\n"
-                    "• Location: {{job_location}} ({{job_type}})\n"
-                    "• Compensation: {{ctc}}\n"
-                    "• Deadline to Apply: {{deadline}}\n\n"
-                    "You can view more details or apply using the options below."
+                    "You have been invited for an interview with {{company_name}}.\n\n"
+                    "• Number of Rounds: {{number_of_rounds}}\n"
+                    "• Round 1 Timing: {{round1_timing}}\n"
+                    "• Round 1 Venue: {{round1_venue}}\n\n"
+                    "Click the button below for more details."
                 ),
                 "example": {
                     "body_text_named_params": [
-                        {"param_name": "job_title", "example": "Frontend Developer"},
-                        {"param_name": "company_name", "example": "Acme Innovations"},
-                        {"param_name": "job_location", "example": "Bengaluru"},
-                        {"param_name": "job_type", "example": "Hybrid"},
-                        {"param_name": "ctc", "example": "₹12-15 LPA"},
-                        {"param_name": "deadline", "example": "20-Sep-2025"}
+                        {"param_name": "company_name", "example": "Innovate Solutions"},
+                        {"param_name": "company_name", "example": "3"},
+                        {"param_name": "round1_timing", "example": "25-Oct-2025 at 11:00 AM"},
+                        {"param_name": "round1_venue", "example": "Virtual via Google Meet"}
                     ]
                 }
             },
@@ -72,12 +70,8 @@ def create_job_alert_template(
                     {
                         "type": "URL",
                         "text": "View Details",
-                        "url": f"{base_job_url.strip()}/{{{{1}}}}",
-                        "example": ["ACME-FED-01"]
-                    },
-                    {
-                        "type": "QUICK_REPLY",
-                        "text": "Apply Now"
+                        "url": f"{base_interview_url.strip()}/{{{{1}}}}",
+                        "example": ["IS-DEV-05"]
                     }
                 ]
             }
